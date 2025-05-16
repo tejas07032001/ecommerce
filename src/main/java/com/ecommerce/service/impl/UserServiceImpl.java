@@ -4,6 +4,7 @@ import com.ecommerce.dtos.UserDto;
 import com.ecommerce.entities.User;
 import com.ecommerce.repository.UserRepository;
 import com.ecommerce.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ModelMapper mapper;     // we taking model mapper class with map method  to convert entity to dto and dto to entity
 
     @Override
     public UserDto createUser(UserDto userDto) {
@@ -92,34 +96,39 @@ public class UserServiceImpl implements UserService {
 
 
 
-    private User dtoToEntity(UserDto userDto) {
+    private User dtoToEntity(UserDto userDto) {     // after taking modelmapper we comment out written to code to convert  dto to enntity
 
-        User user = User.builder()
-                .userId(userDto.getUserId())
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .password(userDto.getPassword())
-                .about(userDto.getAbout())
-                .gender(userDto.getGender())
-                .image(userDto.getImage())
-                .build();
-        return user;
+
+ //       User user = User.builder()
+//                .userId(userDto.getUserId())
+//                .name(userDto.getName())
+//                .email(userDto.getEmail())
+//                .password(userDto.getPassword())
+//                .about(userDto.getAbout())
+//                .gender(userDto.getGender())
+//                .image(userDto.getImage())
+//                .build();
+//        return user;
+
+        return mapper.map(userDto,User.class);           //return it after we declared mapper class
     }
 
 
 
-    private UserDto entityToDto(User savedUser) {
+    private UserDto entityToDto(User savedUser) {           // after taking modelmapper we comment out written to code to convert entity to dto
 
-        UserDto userDto = UserDto.builder()
-                .userId(savedUser.getUserId())
-                .name(savedUser.getName())
-                .email(savedUser.getEmail())
-                .password(savedUser.getPassword())
-                .about(savedUser.getAbout())
-                .gender(savedUser.getGender())
-                .image(savedUser.getImage())
-                .build();
-        return userDto;
+//        UserDto userDto = UserDto.builder()
+//                .userId(savedUser.getUserId())
+//                .name(savedUser.getName())
+//                .email(savedUser.getEmail())
+//                .password(savedUser.getPassword())
+//                .about(savedUser.getAbout())
+//                .gender(savedUser.getGender())
+//                .image(savedUser.getImage())
+//                .build();
+//        return userDto;
+
+         return mapper.map(savedUser,UserDto.class);        //return it after we declared mapper class
 
     }
 

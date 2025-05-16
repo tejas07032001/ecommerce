@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -41,6 +43,45 @@ public class UserController {
         userService.deleteUser(userId);
 
         return new ResponseEntity<>("user delete successfully",HttpStatus.OK);
+    }
+
+    //getALL
+    @GetMapping()
+    public ResponseEntity<List<UserDto>> getALLUsers(){
+        List<UserDto> allUser = userService.getAllUser();
+
+        return new ResponseEntity<>(allUser,HttpStatus.OK);
+
+    }
+
+
+    //get single
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto> getUser( @PathVariable String userId ){
+
+        UserDto userById = userService.getUserById(userId);
+
+        return new ResponseEntity<>(userById,HttpStatus.OK);
+    }
+
+    //get By Email
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email){
+
+        UserDto userByEmail = userService.getUserByEmail(email);
+
+        return new ResponseEntity<>(userByEmail,HttpStatus.OK);
+    }
+
+    //search user
+
+    @GetMapping("/search/{keywords}")
+    public ResponseEntity<List<UserDto>> searchUser(@PathVariable String keywords){
+
+        List<UserDto> userDtos = userService.searchUser(keywords);
+
+        return new ResponseEntity<>(userDtos,HttpStatus.OK);
+
     }
 
 }
