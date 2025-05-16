@@ -5,13 +5,14 @@ import lombok.*;
 
 //These layer is  use to transfer data (data transfer object )
 
+
+
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
-
 public class UserDto {
 
     private String userId;

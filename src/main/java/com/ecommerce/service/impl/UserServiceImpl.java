@@ -36,9 +36,9 @@ public class UserServiceImpl implements UserService {
                                                     // we can use local mapper class for it and we do it manually also
         User savedUser = userRepository.save(user);
 
-       UserDto newDto = entityToDto(savedUser);  // This method convert entity to Dto because we need entity to work bt after working we need to pass the data and we dto class for that
+        UserDto userDto1 = entityToDto(savedUser);// This method convert entity to Dto because we need entity to work bt after working we need to pass the data and we dto class for that
 
-        return newDto;
+        return userDto1;
     }
 
 
@@ -58,10 +58,10 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUser() {
 
         List<User> all = userRepository.findAll();
-        List<UserDto> collect = all.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
+        List<UserDto> dtoList = all.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
 
 
-        return collect;
+        return dtoList;
     }
 
     @Override

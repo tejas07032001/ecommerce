@@ -42,12 +42,7 @@ public class UserController {
                                                                                      //    so we need to create message custome (may be in json)
                                                                                      //By using these APiResponseMessage class (before use use String in it
         userService.deleteUser(userId);
-
-        ApiResponseMessage message = ApiResponseMessage
-                                    .builder()
-                                    .msg("user delete successfully")
-                                    .success(true).status(HttpStatus.OK)
-                                    .build();              //newly added after api class
+        ApiResponseMessage message = ApiResponseMessage.builder().msg("not working").success(true).status(HttpStatus.OK).build();//newly added after api class
 
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
