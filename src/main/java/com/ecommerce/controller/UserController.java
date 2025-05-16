@@ -1,5 +1,6 @@
 package com.ecommerce.controller;
 
+import com.ecommerce.dtos.ApiResponseMessage;
 import com.ecommerce.dtos.UserDto;
 import com.ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,18 @@ public class UserController {
 
     //delete
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser (@PathVariable String userId){          // never send data in String .. normal String not a json data
+    public ResponseEntity<ApiResponseMessage> deleteUser (@PathVariable String userId){          // never send data in String .. normal String not a json data
                                                                                      //    so we need to create message custome (may be in json)
-
+                                                                                     //By using these APiResponseMessage class (before use use String in it
         userService.deleteUser(userId);
 
-        return new ResponseEntity<>("user delete successfully",HttpStatus.OK);
+        ApiResponseMessage message = ApiResponseMessage
+                                    .builder()
+                                    .msg("user delete successfully")
+                                    .success(true).status(HttpStatus.OK)
+                                    .build();              //newly added after api class
+
+        return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
     //getALL
