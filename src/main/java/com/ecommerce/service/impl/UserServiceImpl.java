@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,11 +28,11 @@ public class UserServiceImpl implements UserService {
 
 
 
-        User user= DtoToEntity(userDto);             //This method convert DTO to Entity because we work on entity bt we transfer value from dto so first we need to convert it into entity
+        User user= dtoToEntity(userDto);             //This method convert DTO to Entity because we work on entity bt we transfer value from dto so first we need to convert it into entity
                                                     // we can use local mapper class for it and we do it manually also
         User savedUser = userRepository.save(user);
 
-       UserDto newDto = EntityToDto(savedUser);  // This method convert entity to Dto because we need entity to work bt after working we need to pass the data and we dto class for that
+       UserDto newDto = entityToDto(savedUser);  // This method convert entity to Dto because we need entity to work bt after working we need to pass the data and we dto class for that
 
         return newDto;
     }
@@ -44,26 +46,44 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String userId) {
 
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("not user find"));
+            userRepository.delete(user);
     }
 
     @Override
     public List<UserDto> getAllUser() {
-        return null;
+
+        List<User> all = userRepository.findAll();
+        List<UserDto> collect = all.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
+
+
+        return collect;
     }
 
     @Override
     public UserDto getUserById(String userId) {
-        return null;
+
+        User id = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("No user with this id"));
+
+        return entityToDto(id);
     }
 
     @Override
     public UserDto getUserByEmail(String email) {
-        return null;
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("No user found with email"));
+
+        return entityToDto(user);
     }
 
     @Override
     public List<UserDto> searchUser(String keyword) {
-        return null;
+
+        Optional<User> containing = userRepository.findByNameContaining(keyword);
+        List<UserDto> dtoList = containing.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
+
+
+        return dtoList;
     }
 
 
@@ -72,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
 
 
-    private User DtoToEntity(UserDto userDto) {
+    private User dtoToEntity(UserDto userDto) {
 
         User user = User.builder()
                 .userId(userDto.getUserId())
@@ -88,7 +108,7 @@ public class UserServiceImpl implements UserService {
 
 
 
-    private UserDto EntityToDto(User savedUser) {
+    private UserDto entityToDto(User savedUser) {
 
         UserDto userDto = UserDto.builder()
                 .userId(savedUser.getUserId())
