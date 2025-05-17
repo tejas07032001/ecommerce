@@ -3,6 +3,7 @@ package com.ecommerce.service.impl;
 import com.ecommerce.dtos.PageableResponse;
 import com.ecommerce.dtos.UserDto;
 import com.ecommerce.entities.User;
+import com.ecommerce.helper.Helper;
 import com.ecommerce.repository.UserRepository;
 import com.ecommerce.service.UserService;
 import lombok.Setter;
@@ -84,18 +85,8 @@ public class UserServiceImpl implements UserService {
         Pageable pageable= PageRequest.of(pageNumber,pageSize,sort);                 //added after we want data in pagination then we add sort also
 
         Page<User> page = userRepository.findAll(pageable);
-        List<User> content = page.getContent();
 
-
-        List<UserDto> dtoList = content.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
-
-        PageableResponse<UserDto> response=new PageableResponse<>();
-        response.setContent(dtoList);
-        response.setPageNumber(page.getNumber());
-        response.setPageSize(page.getSize());
-        response.setTotalElements(page.getTotalElements());
-        response.setTotalPages(page.getTotalPages());
-        response.setLastPage(page.isLast());
+        PageableResponse<UserDto> response = Helper.getPaegebleResponse(page, UserDto.class);
 
         return response;
     }

@@ -1,6 +1,7 @@
 package com.ecommerce.controller;
 
 import com.ecommerce.dtos.ApiResponseMessage;
+import com.ecommerce.dtos.ImageResponse;
 import com.ecommerce.dtos.PageableResponse;
 import com.ecommerce.dtos.UserDto;
 import com.ecommerce.service.UserService;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -93,6 +95,25 @@ public class UserController {
         return new ResponseEntity<>(userDtos,HttpStatus.OK);
 
     }
+
+
+
+
+
+
+    ////////////////////////////
+    //Upload User Image
+
+    public ResponseEntity<ImageResponse> uploadUserImage(
+        @RequestParam("userImage")MultipartFile image                //multipart part file is data type which is used to store file data
+                                                        )
+    {
+    return null;
+    }
+
+
+
+    //serve user image
 
 }
 
