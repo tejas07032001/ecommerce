@@ -4,13 +4,16 @@ import com.ecommerce.dtos.ApiResponseMessage;
 import com.ecommerce.dtos.ImageResponse;
 import com.ecommerce.dtos.PageableResponse;
 import com.ecommerce.dtos.UserDto;
+import com.ecommerce.service.FileService;
 import com.ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -20,6 +23,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    //declare for adding the image later
+    private FileService fileService;
+
+
+
+    @Value("${user.profile.image.path}")
+    private String imageUploadPath;            // where we upload our image thats path is stored in that varible that we use use in below filesss
+                                               // And we get the value means the path from application.properties and store the image into these folder
     //Create
     @PostMapping
     public ResponseEntity<UserDto> createUser (@RequestBody UserDto userDto){
@@ -104,11 +116,21 @@ public class UserController {
     ////////////////////////////
     //Upload User Image
 
+    @PostMapping("image/{userId}")
     public ResponseEntity<ImageResponse> uploadUserImage(
-        @RequestParam("userImage")MultipartFile image                //multipart part file is data type which is used to store file data
-                                                        )
+                        @RequestParam("userImage")MultipartFile image, @PathVariable String userId ) throws IOException               //multipart part file is data type which is used to store file data
     {
-    return null;
+        String imageName = fileService.uploadFile(image, imageUploadPath);
+
+        //We need to update image name into userId profile so we written below line
+        UserDto user = userService.getUserById(userId);
+        user.setImage(imageName);
+        UserDto userDto = userService.updateUser(user, userId);
+
+
+        ImageResponse imageResponse= ImageResponse.builder().imageName(imageName).success(true).status(HttpStatus.CREATED).build();
+
+        return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
     }
 
 
