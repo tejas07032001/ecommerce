@@ -1,5 +1,6 @@
 package com.ecommerce.service.impl;
 
+import com.ecommerce.dtos.PageableResponse;
 import com.ecommerce.dtos.UserDto;
 import com.ecommerce.entities.User;
 import com.ecommerce.repository.UserRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -71,9 +73,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUser(int pageNumber , int pageSize) {
-    //pageNumber default start from zero
-        Pageable pageable= PageRequest.of(pageNumber,pageSize);                 //added after we want data in pagination
+    public PageableResponse<UserDto> getAllUser(int pageNumber , int pageSize, String sortBy, String sortDir) {
+
+       // Sort sort = Sort.by(sortBy);//these declared after pagination for  sorting
+
+        Sort sort=(sortDir.equalsIgnoreCase("desc")) ? (Sort.by(sortBy).descending()):(Sort.by(sortBy).ascending());
+                    //These declared for checking condition for ascending or decending
+
+        //pageNumber default start from zero
+        Pageable pageable= PageRequest.of(pageNumber,pageSize,sort);                 //added after we want data in pagination then we add sort also
 
         Page<User> page = userRepository.findAll(pageable);
         List<User> content = page.getContent();
@@ -81,8 +89,15 @@ public class UserServiceImpl implements UserService {
 
         List<UserDto> dtoList = content.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
 
+        PageableResponse<UserDto> response=new PageableResponse<>();
+        response.setContent(dtoList);
+        response.setPageNumber(page.getNumber());
+        response.setPageSize(page.getSize());
+        response.setTotalElements(page.getTotalElements());
+        response.setTotalPages(page.getTotalPages());
+        response.setLastPage(page.isLast());
 
-        return dtoList;
+        return response;
     }
 
     @Override

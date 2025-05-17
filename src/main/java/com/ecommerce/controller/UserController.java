@@ -1,6 +1,7 @@
 package com.ecommerce.controller;
 
 import com.ecommerce.dtos.ApiResponseMessage;
+import com.ecommerce.dtos.PageableResponse;
 import com.ecommerce.dtos.UserDto;
 import com.ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,12 +50,15 @@ public class UserController {
 
     //getALL
     @GetMapping()
-    public ResponseEntity<List<UserDto>> getALLUsers(
-                                        @RequestParam(value = "pageNumber",defaultValue = "0", required = false) int pageNumber ,           //We declared it later to make pagination
-                                        @RequestParam(value = "pageSize",defaultValue = "10",required = false) int pageSize
+    public ResponseEntity<PageableResponse<UserDto>> getALLUsers(
+                        @RequestParam(value = "pageNumber",defaultValue = "0", required = false) int pageNumber ,           //We declared it later to make pagination
+                        @RequestParam(value = "pageSize",defaultValue = "10",required = false) int pageSize,                 // these is also
+
+                        @RequestParam(value = "sortBy",defaultValue = "name", required = false) String sortBy ,          //THESE IS DECLARED AFTER PAGINATION FOR SORTING
+                        @RequestParam(value = "sortDir",defaultValue = "asc", required = false) String sortDir
                         )
     {
-        List<UserDto> allUser = userService.getAllUser(pageNumber,pageSize);
+        PageableResponse<UserDto> allUser = userService.getAllUser(pageNumber, pageSize, sortBy, sortDir);
 
         return new ResponseEntity<>(allUser,HttpStatus.OK);
 
