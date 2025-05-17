@@ -16,7 +16,7 @@ public interface UserService {
      void deleteUser (String userId);
 
      //get all user
-    List<UserDto> getAllUser();
+    List<UserDto> getAllUser(int pageNumber, int pageSize);
 
     //get single user
     UserDto getUserById(String userId);
@@ -26,5 +26,6 @@ public interface UserService {
 
     //Search User
     List<UserDto> searchUser(String keyword);
+
 
 }

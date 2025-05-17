@@ -1,11 +1,7 @@
 package com.ecommerce.dtos;
 
-import jakarta.persistence.Column;
+
 import lombok.*;
-
-//These layer is  use to transfer data (data transfer object )
-
-
 
 
 @Getter
@@ -30,4 +26,7 @@ public class UserDto {
 
     private String image;
 
+
 }
+
+

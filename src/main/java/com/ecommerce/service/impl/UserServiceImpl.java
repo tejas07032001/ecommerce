@@ -4,14 +4,19 @@ import com.ecommerce.dtos.UserDto;
 import com.ecommerce.entities.User;
 import com.ecommerce.repository.UserRepository;
 import com.ecommerce.service.UserService;
+import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,15 +41,26 @@ public class UserServiceImpl implements UserService {
                                                     // we can use local mapper class for it and we do it manually also
         User savedUser = userRepository.save(user);
 
-        UserDto userDto1 = entityToDto(savedUser);// This method convert entity to Dto because we need entity to work bt after working we need to pass the data and we dto class for that
+        UserDto newDto = entityToDto(savedUser);// This method convert entity to Dto because we need entity to work bt after working we need to pass the data and we dto class for that
 
-        return userDto1;
+        return newDto;
     }
 
 
     @Override
     public UserDto updateUser(UserDto userDto, String UserId) {
-        return null;
+        User user = userRepository.findById(UserId).orElseThrow(() -> new RuntimeException("User not found exception"));
+
+        user.setName(userDto.getName());
+        user.setAbout(userDto.getAbout());
+        user.setGender(userDto.getGender());
+        user.setPassword(userDto.getPassword());
+        user.setImage(userDto.getImage());
+
+        User updatedUser = userRepository.save(user);
+        UserDto updatedDto = entityToDto(updatedUser);
+
+        return updatedDto;
     }
 
     @Override
@@ -55,10 +71,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUser() {
+    public List<UserDto> getAllUser(int pageNumber , int pageSize) {
+    //pageNumber default start from zero
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);                 //added after we want data in pagination
 
-        List<User> all = userRepository.findAll();
-        List<UserDto> dtoList = all.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
+        Page<User> page = userRepository.findAll(pageable);
+        List<User> content = page.getContent();
+
+
+        List<UserDto> dtoList = content.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
 
 
         return dtoList;
