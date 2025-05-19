@@ -8,13 +8,22 @@ import com.ecommerce.repository.UserRepository;
 import com.ecommerce.service.UserService;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,6 +38,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper mapper;     // we taking model mapper class with map method  to convert entity to dto and dto to entity
+
+    @Value("${user.profile.image.path}")        //we are using these for delete image when we delete user
+    private String imagePath;                   // it get path of image
+
+    private Logger logger= LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
     public UserDto createUser(UserDto userDto) {
@@ -68,9 +82,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(String userId) {
-
+        //getting user to delete step1
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("not user find"));
-            userRepository.delete(user);
+
+        //when we delete the user then we want to delete user image as well that we stored in the image folder
+        //so the following operation is usefull for that
+
+        //delete user profile image
+        //images/user/abc.png           get full image path
+        String fullPath = imagePath + user.getImage();
+
+        try {
+            Path path = Paths.get(fullPath);
+            Files.delete(path);
+        }catch (NoSuchFileException ex){
+            logger.info("user image not found in folder");
+            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+
+        // delete user step2
+        userRepository.delete(user);
     }
 
     @Override
