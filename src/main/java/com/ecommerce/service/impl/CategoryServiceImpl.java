@@ -12,9 +12,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
+@Service
 public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
@@ -27,6 +30,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto create(CategoryDto categoryDto) {
+
+        String categoryId = UUID.randomUUID().toString();
+        categoryDto.setCategoryID(categoryId);
 
         Category category = mapper.map(categoryDto, Category.class);
         Category savedCartegory = categoryRepository.save(category);

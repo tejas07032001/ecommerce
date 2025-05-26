@@ -13,15 +13,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CategoryDto {
 
-
-
     private String categoryID;
 
-    
     private String title;
 
-
-    private String Discription;
+    private String discription;
 
     private String coverImage;
 
