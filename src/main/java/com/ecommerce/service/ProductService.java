@@ -8,7 +8,6 @@ import java.util.List;
 public interface ProductService {
 
     //create
-
     ProductDto create(ProductDto productDto);
 
     //update
@@ -27,8 +26,8 @@ public interface ProductService {
     PageableResponse<ProductDto> getAllLive(int  pageNumber,int pageSize,String sortBy, String sortDir);
 
     //search
-
     PageableResponse<ProductDto> searchByTitle(String subTitle,int  pageNumber,int pageSize,String sortBy, String sortDir);
 
+    //
 
 }
