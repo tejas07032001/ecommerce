@@ -112,7 +112,7 @@ public class ProductController {
     @PostMapping("/image/{productId}")
     public ResponseEntity<ImageResponse> uploadProductImage(
             @PathVariable String productId,
-            @RequestParam("productImage")MultipartFile image
+            @RequestParam(" ")MultipartFile image
             ) throws IOException {
 
     String uploadFile = fileService.uploadFile(image, imagePath);
