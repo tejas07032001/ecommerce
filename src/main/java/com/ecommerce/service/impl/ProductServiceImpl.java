@@ -2,8 +2,10 @@ package com.ecommerce.service.impl;
 
 import com.ecommerce.dtos.PageableResponse;
 import com.ecommerce.dtos.ProductDto;
+import com.ecommerce.entities.Category;
 import com.ecommerce.entities.Product;
 import com.ecommerce.helper.Helper;
+import com.ecommerce.repository.CategoryRepository;
 import com.ecommerce.repository.ProductRepository;
 import com.ecommerce.service.ProductService;
 import org.modelmapper.ModelMapper;
@@ -27,6 +29,8 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
     public ProductDto create(ProductDto productDto) {
@@ -125,5 +129,31 @@ public class ProductServiceImpl implements ProductService {
 
         PageableResponse<ProductDto> paegebleResponse = Helper.getPaegebleResponse(page, ProductDto.class);
         return paegebleResponse;
+    }
+
+    @Override
+    public ProductDto creatWithCategory(ProductDto productDto, String categoryId) {
+
+        //fetch category from DB
+
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("category not found"));
+
+
+        Product product = mapper.map(productDto, Product.class);
+
+        //generate product Id
+        String random = UUID.randomUUID().toString();
+        product.setProductId(random);
+
+        //Generate added Date
+        product.setProductDate(new Date());
+
+        //fetch categoryId with product
+
+        product.setCategory(category);
+
+        Product savedProduct = productRepository.save(product);
+        ProductDto dto = mapper.map(savedProduct, ProductDto.class);
+        return dto;
     }
 }

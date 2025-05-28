@@ -1,5 +1,6 @@
 package com.ecommerce.dtos;
 
+import com.ecommerce.entities.Category;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.*;
@@ -36,4 +37,5 @@ public class ProductDto {
 
     private String productImageName;
 
+    private Category category;
 }
